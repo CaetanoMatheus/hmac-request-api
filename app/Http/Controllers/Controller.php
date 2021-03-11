@@ -20,7 +20,7 @@ class Controller extends BaseController
         );
         return $response['status'] == 400
             ? response()->json(['error' => $response['error']], $response['status'])
-            : response()->json($response['message'], $response['status']);
+            : response()->json($response, 200);        
     }
 
     private function sendRequest(String $method, String $url, String $jsonData, array $headers): array
@@ -39,12 +39,13 @@ class Controller extends BaseController
         $response = curl_exec($curl);
         $error = curl_error($curl);
 
+        
         curl_close($curl);
-
+        
         if ($error) {
             return ['error' => $error, 'status' => 400];
         }
-        return ['message' => json_decode($response), 'status' => 200];
+        return json_decode($response, true);
     }
 
     private function validateData(Request $request): void
